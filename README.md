@@ -7,7 +7,7 @@
 - 在选中条目后按 `Cmd + C`（macOS）或 `Ctrl + C`（Windows/Linux）
 - 将 citation key 复制到剪贴板
 - 如果选中多个条目，则按逗号分隔复制多个 citation key
-- 复制成功后弹出提示窗口，并显示实际复制的内容
+- 复制成功后显示 Zotero 原生通知浮窗（无需用户确认），并显示实际复制内容
 
 ## 文件
 
@@ -50,7 +50,7 @@ A Zotero 7/8 plugin that replaces item-copy behavior in the main items list:
 - Press `Cmd + C` (macOS) or `Ctrl + C` (Windows/Linux) on selected items
 - Copies citation keys to the clipboard
 - If multiple items are selected, copies keys as a comma-separated list
-- Shows a pop-up containing the copied content
+- Shows a native Zotero non-blocking notification popup containing the copied content
 
 ## Files
 

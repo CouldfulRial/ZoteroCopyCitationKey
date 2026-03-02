@@ -56,11 +56,7 @@ function onMainWindowLoad(eventData) {
 
     var copiedText = citationKeys.join(", ");
     copyToClipboard(copiedText);
-    Services.prompt.alert(
-      window,
-      "Citation key(s) copied",
-      "Copied to clipboard:\n\n" + copiedText
-    );
+    showCopyNotification(window, copiedText, citationKeys.length);
 
     event.preventDefault();
     event.stopPropagation();
@@ -205,4 +201,21 @@ function copyToClipboard(text) {
   Cc["@mozilla.org/widget/clipboardhelper;1"]
     .getService(Ci.nsIClipboardHelper)
     .copyString(text);
+}
+
+function showCopyNotification(window, copiedText, count) {
+  try {
+    var progressWin = new Zotero.ProgressWindow({
+      window: window,
+      closeOnClick: true
+    });
+    var headline = count > 1 ? "Citation keys copied" : "Citation key copied";
+    progressWin.changeHeadline(headline);
+    progressWin.addLines(copiedText, null);
+    progressWin.show();
+    progressWin.startCloseTimer(3500);
+  }
+  catch (error) {
+    Zotero.debug("Copy Citation Key: failed to show notification popup: " + error);
+  }
 }

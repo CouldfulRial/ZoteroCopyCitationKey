@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Copy Citation Key",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Copy citation key(s) from selected Zotero items with Cmd/Ctrl+C",
   "homepage_url": "https://github.com/yifangong/ZoteroCopyCitationKey",
   "author": "yifangong",

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Copy Citation Key",
+  "version": "1.0.4",
+  "description": "Copy citation key(s) from selected Zotero items with Cmd/Ctrl+C",
+  "homepage_url": "https://github.com/yifangong/ZoteroCopyCitationKey",
+  "author": "yifangong",
+  "applications": {
+    "zotero": {
+      "id": "copy-citation-key@example.com",
+      "update_url": "https://example.com/updates.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "8.*"
+    }
+  }
+}

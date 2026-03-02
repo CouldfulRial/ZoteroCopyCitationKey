@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Minimal Zotero Template",
+  "version": "0.0.1",
+  "description": "Minimal installable Zotero plugin template",
+  "author": "template",
+  "applications": {
+    "zotero": {
+      "id": "minimal-zotero-template@example.com",
+      "update_url": "https://example.com/updates.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "8.*"
+    }
+  }
+}

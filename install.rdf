@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>copy-citation-key@example.com</em:id>
     <em:name>Copy Citation Key</em:name>
-    <em:version>1.0.5</em:version>
+    <em:version>1.0.6</em:version>
     <em:type>2</em:type>
     <em:bootstrap>true</em:bootstrap>
     <em:description>Copy citation key(s) from selected Zotero items with Cmd/Ctrl+C</em:description>

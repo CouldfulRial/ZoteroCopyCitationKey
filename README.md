@@ -8,6 +8,7 @@
 - 将 citation key 复制到剪贴板
 - 如果选中多个条目，则按逗号分隔复制多个 citation key
 - 复制成功后显示 Zotero 原生通知浮窗（无需用户确认），并显示实际复制内容
+- 在 PDF 阅读器中按复制快捷键不会触发 citation key 复制；可通过右键菜单 `Copy Citation Key` 复制当前 PDF 条目的 citation key
 
 ## 文件
 
@@ -32,6 +33,7 @@
 ## 行为说明
 
 - 仅当有条目被选中，且焦点不在可编辑文本输入区域时，才会拦截复制快捷键。
+- 仅在主条目列表中处理复制快捷键；Reader/PDF 场景不会拦截。
 - 每个条目的 citation key 查找顺序：
 	1. `citationKey` 字段
 	2. `Extra` 中的 `Citation Key: ...`（或 `BibTeX Citation Key: ...`）
@@ -51,6 +53,7 @@ A Zotero 7/8 plugin that replaces item-copy behavior in the main items list:
 - Copies citation keys to the clipboard
 - If multiple items are selected, copies keys as a comma-separated list
 - Shows a native Zotero non-blocking notification popup containing the copied content
+- In PDF Reader, copy shortcut does not trigger citation-key copy; use the context menu item `Copy Citation Key` to copy the current PDF item's citation key
 
 ## Files
 
@@ -74,7 +77,7 @@ A Zotero 7/8 plugin that replaces item-copy behavior in the main items list:
 
 ## Behavior Notes
 
-- Shortcut interception only occurs when item(s) are selected and focus is not in an editable text field.
+- Shortcut interception only occurs in the main items list (not in Reader/PDF) and when focus is not in an editable text field.
 - Citation key lookup order per item:
 	1. `citationKey` field
 	2. `Citation Key: ...` (or `BibTeX Citation Key: ...`) in `Extra`

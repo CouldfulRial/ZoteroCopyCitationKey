@@ -1,10 +1,18 @@
 var WINDOW_HANDLERS = new WeakMap();
+var PLUGIN_ID = "copy-citation-key@example.com";
+var READER_MENU_HANDLER = null;
 
 function install() {}
 
 function uninstall() {}
 
-function startup() {
+function startup(data) {
+  if (data && data.id) {
+    PLUGIN_ID = data.id;
+  }
+
+  registerReaderContextMenu();
+
   var windows = Zotero.getMainWindows();
   for (var i = 0; i < windows.length; i++) {
     onMainWindowLoad({ window: windows[i] });
@@ -12,6 +20,8 @@ function startup() {
 }
 
 function shutdown(data, reason) {
+  unregisterReaderContextMenu();
+
   if (reason === APP_SHUTDOWN) {
     return;
   }
@@ -33,7 +43,19 @@ function onMainWindowLoad(eventData) {
       return;
     }
 
+    if (isReaderTabActive(window)) {
+      return;
+    }
+
+    if (!isItemsTreeFocused(window, event)) {
+      return;
+    }
+
     if (isEditableTarget(window, event.target)) {
+      return;
+    }
+
+    if (hasSelectedText(window, event)) {
       return;
     }
 
@@ -98,6 +120,17 @@ function isCopyShortcut(event) {
   return true;
 }
 
+function isReaderTabActive(window) {
+  try {
+    var tabs = window && window.Zotero_Tabs;
+    return !!(tabs && tabs.selectedType === "reader");
+  }
+  catch (error) {
+    Zotero.debug("Copy Citation Key: reader tab check failed: " + error);
+    return false;
+  }
+}
+
 function isEditableTarget(window, target) {
   if (!target || !window) {
     return false;
@@ -131,6 +164,79 @@ function isEditableTarget(window, target) {
   }
 
   return false;
+}
+
+function isItemsTreeFocused(window, event) {
+  try {
+    var tabs = window && window.Zotero_Tabs;
+    if (tabs && tabs.selectedType !== "library") {
+      return false;
+    }
+
+    var pane = window && window.ZoteroPane;
+    var itemsView = pane && pane.itemsView;
+    var itemsRoot = itemsView && itemsView.domEl;
+    if (!itemsRoot || typeof itemsRoot.contains !== "function") {
+      return false;
+    }
+
+    if (event && event.target && itemsRoot.contains(event.target)) {
+      return true;
+    }
+
+    var activeElement = window.document && window.document.activeElement;
+    if (activeElement && itemsRoot.contains(activeElement)) {
+      return true;
+    }
+  }
+  catch (error) {
+    Zotero.debug("Copy Citation Key: items tree focus check failed: " + error);
+  }
+
+  return false;
+}
+
+function hasSelectedText(window, event) {
+  try {
+    var focusedWindow = null;
+    if (window.document
+      && window.document.commandDispatcher
+      && window.document.commandDispatcher.focusedWindow) {
+      focusedWindow = window.document.commandDispatcher.focusedWindow;
+    }
+
+    if (selectionHasText(focusedWindow)) {
+      return true;
+    }
+
+    var ownerDocument = event && event.target && event.target.ownerDocument;
+    if (ownerDocument && selectionHasText(ownerDocument.defaultView)) {
+      return true;
+    }
+
+    if (selectionHasText(window)) {
+      return true;
+    }
+  }
+  catch (error) {
+    Zotero.debug("Copy Citation Key: text selection check failed: " + error);
+  }
+
+  return false;
+}
+
+function selectionHasText(targetWindow) {
+  if (!targetWindow || typeof targetWindow.getSelection !== "function") {
+    return false;
+  }
+
+  var selection = targetWindow.getSelection();
+  if (!selection || selection.isCollapsed) {
+    return false;
+  }
+
+  var text = selection.toString();
+  return !!(text && text.trim());
 }
 
 function getSelectedItems(window) {
@@ -217,5 +323,81 @@ function showCopyNotification(window, copiedText, count) {
   }
   catch (error) {
     Zotero.debug("Copy Citation Key: failed to show notification popup: " + error);
+  }
+}
+
+function registerReaderContextMenu() {
+  if (!Zotero.Reader || typeof Zotero.Reader.registerEventListener !== "function") {
+    return;
+  }
+
+  if (READER_MENU_HANDLER) {
+    return;
+  }
+
+  READER_MENU_HANDLER = function (event) {
+    var reader = event && event.reader;
+    var append = event && event.append;
+    if (!reader || typeof append !== "function") {
+      return;
+    }
+
+    append({
+      label: "Copy Citation Key",
+      onCommand: function () {
+        copyCitationKeyFromReader(reader);
+      }
+    });
+  };
+
+  Zotero.Reader.registerEventListener(
+    "createViewContextMenu",
+    READER_MENU_HANDLER,
+    PLUGIN_ID
+  );
+}
+
+function unregisterReaderContextMenu() {
+  if (!READER_MENU_HANDLER) {
+    return;
+  }
+
+  if (Zotero.Reader && typeof Zotero.Reader.unregisterEventListener === "function") {
+    Zotero.Reader.unregisterEventListener("createViewContextMenu", READER_MENU_HANDLER);
+  }
+
+  READER_MENU_HANDLER = null;
+}
+
+function copyCitationKeyFromReader(reader) {
+  try {
+    var itemID = reader.itemID || (reader._item && reader._item.id);
+    if (!itemID) {
+      return;
+    }
+
+    var item = Zotero.Items.get(itemID);
+    if (!item) {
+      return;
+    }
+
+    var sourceItem = item;
+    if (item.parentItemID) {
+      var parentItem = Zotero.Items.get(item.parentItemID);
+      if (parentItem) {
+        sourceItem = parentItem;
+      }
+    }
+
+    var citationKey = getCitationKey(sourceItem);
+    if (!citationKey) {
+      return;
+    }
+
+    copyToClipboard(citationKey);
+    showCopyNotification(reader._window || Zotero.getMainWindow(), citationKey, 1);
+  }
+  catch (error) {
+    Zotero.debug("Copy Citation Key: reader context menu copy failed: " + error);
   }
 }

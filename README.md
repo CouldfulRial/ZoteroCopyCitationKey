@@ -2,7 +2,7 @@
 
 ## 中文说明
 
-这是一个 Zotero 7/8 插件，用于替换主条目列表中的复制行为：
+这是一个 Zotero 7+ 插件（已放宽版本上限以兼容最新 Zotero），用于替换主条目列表中的复制行为：
 
 - 在选中条目后按 `Cmd + C`（macOS）或 `Ctrl + C`（Windows/Linux）
 - 将 citation key 复制到剪贴板
@@ -25,7 +25,7 @@
 	 zip -X -r ZoteroCopyCitationKey.xpi manifest.json bootstrap.js install.rdf README.md
 	 ```
 
-2. 打开 Zotero 7/8。
+2. 打开 Zotero 7+（含最新版本）。
 3. 进入 `Tools -> Plugins`。
 4. 点击齿轮图标 -> `Install Plugin From File...`。
 5. 选择 `ZoteroCopyCitationKey.xpi`。
@@ -47,7 +47,7 @@
 
 ## EN
 
-A Zotero 7/8 plugin that replaces item-copy behavior in the main items list:
+A Zotero 7+ plugin (with an open upper compatibility bound for newer Zotero versions) that replaces item-copy behavior in the main items list:
 
 - Press `Cmd + C` (macOS) or `Ctrl + C` (Windows/Linux) on selected items
 - Copies citation keys to the clipboard
@@ -70,7 +70,7 @@ A Zotero 7/8 plugin that replaces item-copy behavior in the main items list:
 	 zip -X -r ZoteroCopyCitationKey.xpi manifest.json bootstrap.js install.rdf README.md
 	 ```
 
-2. Open Zotero 7/8.
+2. Open Zotero 7+ (including the latest version).
 3. Go to `Tools -> Plugins`.
 4. Click the gear icon -> `Install Plugin From File...`.
 5. Select `ZoteroCopyCitationKey.xpi`.
